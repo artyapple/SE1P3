@@ -10,13 +10,9 @@ public class ErrorZustand implements IBefeuchtungsZustand {
 	boolean error = true;
 		
 	public static ErrorZustand getObjekt(){
-				
 		if(objekt == null){
-			
 			objekt = new ErrorZustand();
-			
 		}
-		
 		return objekt;
 	}
 
@@ -28,13 +24,12 @@ public class ErrorZustand implements IBefeuchtungsZustand {
 		s = sc.nextLine();
 		while(error){
 			s = sc.nextLine();			
-			if(s != null){
-				
+			if(!s.equalsIgnoreCase("")){
 				error = false;
-				
 			}
 		}//while
-		
+		System.out.println("Error Zustand verlassen...");
+		system.setState(BefeuchtungOk.getObjekt());
 	}
 		
 }

@@ -23,7 +23,7 @@ public class FSMImplementation implements IFSM {
 	private ITimer timer;
 	private final double upperBound;
 	private final double lowerBound;
-	//private boolean err;
+	// private boolean err;
 	double feuchtigkeit;
 
 	public FSMImplementation(IPump pumpA, IPump pumpB, IGate gate, IOpticalSignals signals, IHumidifier humidifier,
@@ -40,125 +40,67 @@ public class FSMImplementation implements IFSM {
 		upperBound = 60;
 		lowerBound = 20;
 	}
-	
-	private void updateState(){
-		
-		
-		
-		if(state == ErrorZustand.getObjekt()) {
-			
-			//this
-						
+
+	private void updateState() {
+		if (state == ErrorZustand.getObjekt()) {
+			// this
 		} else {
-			//feuchtigkeit = sensor.getHumidity();			
-			
-			if (feuchtigkeit < lowerBound){
-				
+			// feuchtigkeit = sensor.getHumidity();
+			if (feuchtigkeit < lowerBound) {
 				state = BefeuchtungN.getObjekt();
-				
-			} else if (feuchtigkeit <= upperBound && feuchtigkeit >= lowerBound){
-				
+			} else if (feuchtigkeit <= upperBound && feuchtigkeit >= lowerBound) {
 				state = BefeuchtungOk.getObjekt();
-				
 			} else {
-				
 				state = BefeuchtungH.getObjekt();
 			}
 		}
-		
 	}
 
 	@Override
 	public void evaluate() {
-		for (int i = 0; i <= 10; i++){
-		updateState();
-		state.evaluate(this);
-		feuchtigkeit = Math.random()*100;		
-		}
-		
-		/*switch (state) {
-		case HumidityOkay:
-			// externalAction();
+		for (int i = 0; i <= 10; i++) {
 			updateState();
-			sensor.getHumidity();
-			break;
-
-		case GateOpen:
-			signals.switchLampBOn();
-			
-			if (err){
-				state = FSMState.Error;
-				}
-			else {
-				state =FSMState.HumidityOkay;
-			}
-			gate.sendOpenGate();
-			while (gate.receivedGateClosed()) {
-				System.out.println("Gate open: in progress...");
-			}
-			signals.switchLampBOff();
-			break;
-		// Trockung
-		case GateClose:
-			signals.switchLampBOn();
-			gate.sendCloseGate();
-			while (gate.receivedGateOpen()) {
-				System.out.println("Gate close: in progress...");
-			}
-			signals.switchLampBOff();
-			state = FSMState.Drying;
-			break;
-		case Drying:
-			startPumps(pumpA, pumpB, timer); // activate Pump A and B
-			if (pumpsActivated(pumpA, pumpB, timer)) {
-				System.out.println("f");
-				while (sensor.getHumidity() > upperBound) {
-					System.out.println("Drying in progress...");
-				} // wait
-				err = false;
-				System.out.println("err is false");
-			} else {
-				err = true;
-				System.out.println("err is true");
-			}
-			pumpA.sendDeactivate();
-			pumpB.sendDeactivate();
-			state = FSMState.GateOpen;
-			break;
-		// Befeuchtung
-		case Humidification:
-			signals.switchLampAOn();
-			humidifier.sendSprayOn();
-			humidifier.sendSprayOff();
-			signals.switchLampAOff();
-			state = FSMState.HumidityOkay;
-			break;
-		// Fehlerzustand
-		case Error:
-			System.out.println("Waiting for manual control...");
-			if (operatorPanel.receivedAcknowledgement()) {
-				System.out.println("Manual controll in progress...");
-				state = FSMState.HumidityOkay;
-				err = false;
-			}
-			break;
-		default:
-			throw new NullPointerException();
+			state.evaluate(this);
+			feuchtigkeit = Math.random() * 100;
 		}
 
-	}
-
-	private void updateState() {
-		if ((state != FSMState.Error)) {
-			double currentHum = sensor.getHumidity();
-			if (currentHum > upperBound) {
-				state = FSMState.GateClose;
-			} else if (currentHum < lowerBound) {
-				state = FSMState.Humidification;
-			} else if (currentHum >= lowerBound && currentHum <= upperBound) {
-				state = FSMState.HumidityOkay;
-			}
-		}*/
+		/*
+		 * switch (state) { case HumidityOkay: // externalAction();
+		 * updateState(); sensor.getHumidity(); break;
+		 * 
+		 * case GateOpen: signals.switchLampBOn();
+		 * 
+		 * if (err){ state = FSMState.Error; } else { state
+		 * =FSMState.HumidityOkay; } gate.sendOpenGate(); while
+		 * (gate.receivedGateClosed()) { System.out.println(
+		 * "Gate open: in progress..."); } signals.switchLampBOff(); break; //
+		 * Trockung case GateClose: signals.switchLampBOn();
+		 * gate.sendCloseGate(); while (gate.receivedGateOpen()) {
+		 * System.out.println("Gate close: in progress..."); }
+		 * signals.switchLampBOff(); state = FSMState.Drying; break; case
+		 * Drying: startPumps(pumpA, pumpB, timer); // activate Pump A and B if
+		 * (pumpsActivated(pumpA, pumpB, timer)) { System.out.println("f");
+		 * while (sensor.getHumidity() > upperBound) { System.out.println(
+		 * "Drying in progress..."); } // wait err = false; System.out.println(
+		 * "err is false"); } else { err = true; System.out.println(
+		 * "err is true"); } pumpA.sendDeactivate(); pumpB.sendDeactivate();
+		 * state = FSMState.GateOpen; break; // Befeuchtung case Humidification:
+		 * signals.switchLampAOn(); humidifier.sendSprayOn();
+		 * humidifier.sendSprayOff(); signals.switchLampAOff(); state =
+		 * FSMState.HumidityOkay; break; // Fehlerzustand case Error:
+		 * System.out.println("Waiting for manual control..."); if
+		 * (operatorPanel.receivedAcknowledgement()) { System.out.println(
+		 * "Manual controll in progress..."); state = FSMState.HumidityOkay; err
+		 * = false; } break; default: throw new NullPointerException(); }
+		 * 
+		 * }
+		 * 
+		 * private void updateState() { if ((state != FSMState.Error)) { double
+		 * currentHum = sensor.getHumidity(); if (currentHum > upperBound) {
+		 * state = FSMState.GateClose; } else if (currentHum < lowerBound) {
+		 * state = FSMState.Humidification; } else if (currentHum >= lowerBound
+		 * && currentHum <= upperBound) { state = FSMState.HumidityOkay; } }
+		 */
 	}
 
 	/**
@@ -184,71 +126,67 @@ public class FSMImplementation implements IFSM {
 		return false;
 	}
 
-	/*public implementation.FSMState getCurrentState() {
-		return state;
-	}*/
-	
+	/*
+	 * public implementation.FSMState getCurrentState() { return state; }
+	 */
+
 	public boolean startPumps() {
 		timer.startTime(5);
 		pumpA.sendActivate();
 		pumpB.sendActivate();
-				
-		while(!timer.isTimerExpired()){
-			
-			if (pumpA.receivedActivated() && pumpB.receivedActivated()){
-				
+
+		while (!timer.isTimerExpired()) {
+
+			if (pumpA.receivedActivated() && pumpB.receivedActivated()) {
 				return true;
-				
 			}
-			
 		}
-		
 		return false;
 	}
 
-	public IHumidifier getHumidifier(){
-		
+	public IHumidifier getHumidifier() {
+
 		return humidifier;
 	}
-	
-	public IOpticalSignals getSignals(){
-		
+
+	public IOpticalSignals getSignals() {
+
 		return signals;
 	}
-	
-	public IGate getGate(){
-		
+
+	public IGate getGate() {
+
 		return gate;
-	}	
-	
-	public ITimer getTimer(){
-		
+	}
+
+	public ITimer getTimer() {
+
 		return timer;
 	}
-	
-	public IPump getPumpA(){
-		
+
+	public IPump getPumpA() {
+
 		return pumpA;
 	}
-	
-	public IPump getPumpB(){
-		
+
+	public IPump getPumpB() {
+
 		return pumpB;
 	}
-	
-	public IHumiditySensor getSensor(){
-		
+
+	public IHumiditySensor getSensor() {
+
 		return sensor;
 	}
-	
-	public double getSensorUpperBound(){
-		
+
+	public double getSensorUpperBound() {
+
 		return upperBound;
 	}
-	
-	public void setState(IBefeuchtungsZustand state){
-		
+
+	public void setState(IBefeuchtungsZustand state) {
+
 		this.state = state;
-	}	
-	
+	}
+
 }
